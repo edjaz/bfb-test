@@ -1,0 +1,43 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.bforbank.testing",
+      "nativeLanguage": "fr"
+    },
+    "jhipsterVersion": "5.7.0",
+    "applicationType": "monolith",
+    "baseName": "TFTest",
+    "packageName": "com.bforbank.testing",
+    "packageFolder": "com/bforbank/testing",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "ZjE2ZjNjNjhiNmU4NTk1Y2M1OWJjYjQ1YWQwNWQyNzIwNjliYmRkZmZkM2IwN2RlNWJiZmY1ZWI3MWQxOWU0MDQ1NDBlOTBiOTNmODcwNDkzMjdlMDRkYzlhZjY4NDAwODUwOWFkZDA2MTc3YTdkYmY4NDEzYWJlMDI0NjlkOGM=",
+    "clientFramework": "angularX",
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "testFrameworks": [
+      "gatling",
+      "cucumber",
+      "protractor"
+    ],
+    "jhiPrefix": "jhi",
+    "otherModules": [],
+    "enableTranslation": true,
+    "nativeLanguage": "fr",
+    "languages": [
+      "fr",
+      "en"
+    ]
+  }
+}
