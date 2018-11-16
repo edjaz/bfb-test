@@ -1,0 +1,75 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-ticket-heading" jhiTranslate="tfTestApp.ticket.home.createOrEditLabel">Create or edit a Ticket</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!ticket.id">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="ticket.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="tfTestApp.ticket.title" for="field_title">Title</label>
+                    <input type="text" class="form-control" name="title" id="field_title"
+                        [(ngModel)]="ticket.title" required/>
+                    <div [hidden]="!(editForm.controls.title?.dirty && editForm.controls.title?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.title?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="tfTestApp.ticket.description" for="field_description">Description</label>
+                    <input type="text" class="form-control" name="description" id="field_description"
+                        [(ngModel)]="ticket.description" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="tfTestApp.ticket.dueDate" for="field_dueDate">Due Date</label>
+                    <div class="input-group">
+                        <input id="field_dueDate" type="text" class="form-control" name="dueDate" ngbDatepicker  #dueDateDp="ngbDatepicker" [(ngModel)]="ticket.dueDate"
+                        />
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-secondary" (click)="dueDateDp.toggle()"><fa-icon [icon]="'calendar-alt'"></fa-icon></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="tfTestApp.ticket.done" for="field_done">Done</label>
+                    <input type="checkbox" class="form-control" name="done" id="field_done"
+                        [(ngModel)]="ticket.done" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="tfTestApp.ticket.project" for="field_project">Project</label>
+                    <select class="form-control" id="field_project" name="project" [(ngModel)]="ticket.project" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="projectOption.id === ticket.project?.id ? ticket.project : projectOption" *ngFor="let projectOption of projects; trackBy: trackProjectById">{{projectOption.name}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="tfTestApp.ticket.assignedTo" for="field_assignedTo">Assigned To</label>
+                    <select class="form-control" id="field_assignedTo" name="assignedTo" [(ngModel)]="ticket.assignedTo" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="userOption.id === ticket.assignedTo?.id ? ticket.assignedTo : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label jhiTranslate="tfTestApp.ticket.label" for="field_label">Label</label>
+                    <select class="form-control" id="field_label" multiple name="label" [(ngModel)]="ticket.labels">
+                        <option [ngValue]="getSelected(ticket.labels, labelOption)" *ngFor="let labelOption of labels; trackBy: trackLabelById">{{labelOption.label}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
