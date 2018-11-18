@@ -1,11 +1,13 @@
 package com.bforbank.testing.service;
 
+import com.bforbank.testing.domain.Ticket;
 import com.bforbank.testing.service.dto.TicketDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service Interface for managing Ticket.
@@ -49,4 +51,11 @@ public interface TicketService {
      * @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * Get the near future ticket to finish
+     * @param limit
+     * @return
+     */
+    Set<TicketDTO> findNextDueDate(int limit);
 }

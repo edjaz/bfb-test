@@ -1,19 +1,22 @@
 package com.bforbank.testing.service.impl;
 
-import com.bforbank.testing.service.TicketService;
 import com.bforbank.testing.domain.Ticket;
 import com.bforbank.testing.repository.TicketRepository;
+import com.bforbank.testing.service.TicketService;
 import com.bforbank.testing.service.dto.TicketDTO;
 import com.bforbank.testing.service.mapper.TicketMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing Ticket.
@@ -95,5 +98,10 @@ public class TicketServiceImpl implements TicketService {
     public void delete(Long id) {
         log.debug("Request to delete Ticket : {}", id);
         ticketRepository.deleteById(id);
+    }
+
+    @Override
+    public Set<Ticket> findNextDueDate(int limit) {
+        throw new NotImplementedException();
     }
 }
