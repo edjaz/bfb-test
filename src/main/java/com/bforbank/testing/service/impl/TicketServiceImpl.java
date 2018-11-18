@@ -101,7 +101,12 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Set<Ticket> findNextDueDate(int limit) {
-        throw new NotImplementedException();
+    public Set<TicketDTO> findNextDueDate(int limit) {
+        return ticketRepository.findByAssignedToIsCurrentUser()
+            .stream()
+            .sorted(Comparator.comparing(Ticket::getDueDate))
+            .limit(limit)
+            .map(ticketMapper::toDto)
+            .collect(Collectors.toSet());
     }
 }
