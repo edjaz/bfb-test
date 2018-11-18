@@ -1,6 +1,4 @@
 import { Moment } from 'moment';
-import { IProject } from 'app/shared/model//project.model';
-import { IUser } from 'app/core/user/user.model';
 import { ILabel } from 'app/shared/model//label.model';
 
 export interface ITicket {
@@ -9,8 +7,10 @@ export interface ITicket {
     description?: string;
     dueDate?: Moment;
     done?: boolean;
-    project?: IProject;
-    assignedTo?: IUser;
+    projectName?: string;
+    projectId?: number;
+    assignedToLogin?: string;
+    assignedToId?: number;
     labels?: ILabel[];
 }
 
@@ -21,8 +21,10 @@ export class Ticket implements ITicket {
         public description?: string,
         public dueDate?: Moment,
         public done?: boolean,
-        public project?: IProject,
-        public assignedTo?: IUser,
+        public projectName?: string,
+        public projectId?: number,
+        public assignedToLogin?: string,
+        public assignedToId?: number,
         public labels?: ILabel[]
     ) {
         this.done = this.done || false;

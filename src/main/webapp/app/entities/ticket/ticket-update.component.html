@@ -43,16 +43,16 @@
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="tfTestApp.ticket.project" for="field_project">Project</label>
-                    <select class="form-control" id="field_project" name="project" [(ngModel)]="ticket.project" >
+                    <select class="form-control" id="field_project" name="project" [(ngModel)]="ticket.projectId" >
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="projectOption.id === ticket.project?.id ? ticket.project : projectOption" *ngFor="let projectOption of projects; trackBy: trackProjectById">{{projectOption.name}}</option>
+                        <option [ngValue]="projectOption.id" *ngFor="let projectOption of projects; trackBy: trackProjectById">{{projectOption.name}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="tfTestApp.ticket.assignedTo" for="field_assignedTo">Assigned To</label>
-                    <select class="form-control" id="field_assignedTo" name="assignedTo" [(ngModel)]="ticket.assignedTo" >
+                    <select class="form-control" id="field_assignedTo" name="assignedTo" [(ngModel)]="ticket.assignedToId" >
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="userOption.id === ticket.assignedTo?.id ? ticket.assignedTo : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
+                        <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
                     </select>
                 </div>
                 <div class="form-group">

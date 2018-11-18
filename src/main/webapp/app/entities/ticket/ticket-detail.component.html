@@ -23,13 +23,13 @@
                 </dd>
                 <dt><span jhiTranslate="tfTestApp.ticket.project">Project</span></dt>
                 <dd>
-                    <div *ngIf="ticket.project">
-                        <a [routerLink]="['/project', ticket.project?.id, 'view']">{{ticket.project?.name}}</a>
+                    <div *ngIf="ticket.projectId">
+                        <a [routerLink]="['/project', ticket.projectId, 'view']">{{ticket.projectName}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="tfTestApp.ticket.assignedTo">Assigned To</span></dt>
                 <dd>
-                    {{ticket.assignedTo?.login}}
+                    {{ticket.assignedToLogin}}
                 </dd>
                 <dt><span jhiTranslate="tfTestApp.ticket.label">Label</span></dt>
                 <dd>

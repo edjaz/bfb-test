@@ -4,6 +4,9 @@ import com.bforbank.testing.TfTestApp;
 
 import com.bforbank.testing.domain.Ticket;
 import com.bforbank.testing.repository.TicketRepository;
+import com.bforbank.testing.service.TicketService;
+import com.bforbank.testing.service.dto.TicketDTO;
+import com.bforbank.testing.service.mapper.TicketMapper;
 import com.bforbank.testing.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -65,6 +68,15 @@ public class TicketResourceIntTest {
     private TicketRepository ticketRepositoryMock;
 
     @Autowired
+    private TicketMapper ticketMapper;
+
+    @Mock
+    private TicketService ticketServiceMock;
+
+    @Autowired
+    private TicketService ticketService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -83,7 +95,7 @@ public class TicketResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final TicketResource ticketResource = new TicketResource(ticketRepository);
+        final TicketResource ticketResource = new TicketResource(ticketService);
         this.restTicketMockMvc = MockMvcBuilders.standaloneSetup(ticketResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -117,9 +129,10 @@ public class TicketResourceIntTest {
         int databaseSizeBeforeCreate = ticketRepository.findAll().size();
 
         // Create the Ticket
+        TicketDTO ticketDTO = ticketMapper.toDto(ticket);
         restTicketMockMvc.perform(post("/api/tickets")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(ticket)))
+            .content(TestUtil.convertObjectToJsonBytes(ticketDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Ticket in the database
@@ -139,11 +152,12 @@ public class TicketResourceIntTest {
 
         // Create the Ticket with an existing ID
         ticket.setId(1L);
+        TicketDTO ticketDTO = ticketMapper.toDto(ticket);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTicketMockMvc.perform(post("/api/tickets")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(ticket)))
+            .content(TestUtil.convertObjectToJsonBytes(ticketDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Ticket in the database
@@ -159,10 +173,11 @@ public class TicketResourceIntTest {
         ticket.setTitle(null);
 
         // Create the Ticket, which fails.
+        TicketDTO ticketDTO = ticketMapper.toDto(ticket);
 
         restTicketMockMvc.perform(post("/api/tickets")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(ticket)))
+            .content(TestUtil.convertObjectToJsonBytes(ticketDTO)))
             .andExpect(status().isBadRequest());
 
         List<Ticket> ticketList = ticketRepository.findAll();
@@ -188,8 +203,8 @@ public class TicketResourceIntTest {
     
     @SuppressWarnings({"unchecked"})
     public void getAllTicketsWithEagerRelationshipsIsEnabled() throws Exception {
-        TicketResource ticketResource = new TicketResource(ticketRepositoryMock);
-        when(ticketRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        TicketResource ticketResource = new TicketResource(ticketServiceMock);
+        when(ticketServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         MockMvc restTicketMockMvc = MockMvcBuilders.standaloneSetup(ticketResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -200,13 +215,13 @@ public class TicketResourceIntTest {
         restTicketMockMvc.perform(get("/api/tickets?eagerload=true"))
         .andExpect(status().isOk());
 
-        verify(ticketRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+        verify(ticketServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @SuppressWarnings({"unchecked"})
     public void getAllTicketsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        TicketResource ticketResource = new TicketResource(ticketRepositoryMock);
-            when(ticketRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        TicketResource ticketResource = new TicketResource(ticketServiceMock);
+            when(ticketServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
             MockMvc restTicketMockMvc = MockMvcBuilders.standaloneSetup(ticketResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -216,7 +231,7 @@ public class TicketResourceIntTest {
         restTicketMockMvc.perform(get("/api/tickets?eagerload=true"))
         .andExpect(status().isOk());
 
-            verify(ticketRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+            verify(ticketServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test
@@ -261,10 +276,11 @@ public class TicketResourceIntTest {
             .description(UPDATED_DESCRIPTION)
             .dueDate(UPDATED_DUE_DATE)
             .done(UPDATED_DONE);
+        TicketDTO ticketDTO = ticketMapper.toDto(updatedTicket);
 
         restTicketMockMvc.perform(put("/api/tickets")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedTicket)))
+            .content(TestUtil.convertObjectToJsonBytes(ticketDTO)))
             .andExpect(status().isOk());
 
         // Validate the Ticket in the database
@@ -283,11 +299,12 @@ public class TicketResourceIntTest {
         int databaseSizeBeforeUpdate = ticketRepository.findAll().size();
 
         // Create the Ticket
+        TicketDTO ticketDTO = ticketMapper.toDto(ticket);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTicketMockMvc.perform(put("/api/tickets")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(ticket)))
+            .content(TestUtil.convertObjectToJsonBytes(ticketDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Ticket in the database
@@ -326,5 +343,28 @@ public class TicketResourceIntTest {
         assertThat(ticket1).isNotEqualTo(ticket2);
         ticket1.setId(null);
         assertThat(ticket1).isNotEqualTo(ticket2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(TicketDTO.class);
+        TicketDTO ticketDTO1 = new TicketDTO();
+        ticketDTO1.setId(1L);
+        TicketDTO ticketDTO2 = new TicketDTO();
+        assertThat(ticketDTO1).isNotEqualTo(ticketDTO2);
+        ticketDTO2.setId(ticketDTO1.getId());
+        assertThat(ticketDTO1).isEqualTo(ticketDTO2);
+        ticketDTO2.setId(2L);
+        assertThat(ticketDTO1).isNotEqualTo(ticketDTO2);
+        ticketDTO1.setId(null);
+        assertThat(ticketDTO1).isNotEqualTo(ticketDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(ticketMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(ticketMapper.fromId(null)).isNull();
     }
 }

@@ -19,8 +19,8 @@
             <th jhiSortBy="description"><span jhiTranslate="tfTestApp.ticket.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="dueDate"><span jhiTranslate="tfTestApp.ticket.dueDate">Due Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="done"><span jhiTranslate="tfTestApp.ticket.done">Done</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="project.name"><span jhiTranslate="tfTestApp.ticket.project">Project</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="assignedTo.login"><span jhiTranslate="tfTestApp.ticket.assignedTo">Assigned To</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="projectName"><span jhiTranslate="tfTestApp.ticket.project">Project</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="assignedToLogin"><span jhiTranslate="tfTestApp.ticket.assignedTo">Assigned To</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -32,12 +32,12 @@
                 <td>{{ticket.dueDate | date:'mediumDate'}}</td>
                 <td>{{ticket.done}}</td>
                 <td>
-                    <div *ngIf="ticket.project">
-                        <a [routerLink]="['../project', ticket.project?.id, 'view' ]" >{{ticket.project?.name}}</a>
+                    <div *ngIf="ticket.projectId">
+                        <a [routerLink]="['../project', ticket.projectId , 'view' ]" >{{ticket.projectName}}</a>
                     </div>
                 </td>
                 <td>
-                    {{ticket.assignedTo?.login}}
+                    {{ticket.assignedToLogin}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
