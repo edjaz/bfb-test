@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * REST controller for managing Ticket.
@@ -130,4 +131,12 @@ public class TicketResource {
         ticketService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    @GetMapping("/tickets/mine")
+    @Timed
+    public Set<TicketDTO> lastToDoTicket(@RequestParam(required = false, defaultValue = "3") int last) {
+        return ticketService.findNextDueDate(last);
+
+    }
+
 }
