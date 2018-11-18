@@ -2,13 +2,21 @@ package com.bforbank.testing.web.rest;
 
 import com.bforbank.testing.TfTestApp;
 
+import com.bforbank.testing.domain.Label;
+import com.bforbank.testing.domain.Project;
 import com.bforbank.testing.domain.Ticket;
+import com.bforbank.testing.domain.User;
+import com.bforbank.testing.repository.LabelRepository;
+import com.bforbank.testing.repository.ProjectRepository;
 import com.bforbank.testing.repository.TicketRepository;
+import com.bforbank.testing.repository.UserRepository;
 import com.bforbank.testing.service.TicketService;
 import com.bforbank.testing.service.dto.TicketDTO;
 import com.bforbank.testing.service.mapper.TicketMapper;
 import com.bforbank.testing.web.rest.errors.ExceptionTranslator;
 
+import com.google.common.collect.Sets;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -30,6 +39,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -68,7 +78,16 @@ public class TicketResourceIntTest {
     private TicketRepository ticketRepositoryMock;
 
     @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private TicketMapper ticketMapper;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Mock
     private TicketService ticketServiceMock;
@@ -200,7 +219,7 @@ public class TicketResourceIntTest {
             .andExpect(jsonPath("$.[*].dueDate").value(hasItem(DEFAULT_DUE_DATE.toString())))
             .andExpect(jsonPath("$.[*].done").value(hasItem(DEFAULT_DONE.booleanValue())));
     }
-    
+
     @SuppressWarnings({"unchecked"})
     public void getAllTicketsWithEagerRelationshipsIsEnabled() throws Exception {
         TicketResource ticketResource = new TicketResource(ticketServiceMock);
@@ -367,4 +386,80 @@ public class TicketResourceIntTest {
         assertThat(ticketMapper.fromId(42L).getId()).isEqualTo(42);
         assertThat(ticketMapper.fromId(null)).isNull();
     }
+
+
+    @Test
+    @Transactional
+    @WithMockUser("johndoe")
+    public void getLastDueDateTicket() throws Exception {
+
+
+        // Initialize the database
+        initForDueDate();
+
+        restTicketMockMvc.perform(get("/api/tickets/mine?last=3"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.length()").value(3)
+            );
+    }
+
+
+
+
+    public void initForDueDate() {
+        User user = createUser("johndoe");
+        User user1 = createUser("u1");
+        User user2 = createUser("u2");
+
+        Project project = new Project();
+        project.setName("p1");
+        projectRepository.saveAndFlush(project);
+
+        Label lbl1 = new Label();
+        lbl1.setLabel("incident");
+        labelRepository.saveAndFlush(lbl1);
+
+
+        HashSet tickets = new HashSet();
+
+        tickets.add(createTicket(project, lbl1, "title", "desc", LocalDate.now().plusDays(1), user));
+        tickets.add(createTicket(project, lbl1, "title1", "desc1", LocalDate.now().plusDays(2), user));
+        tickets.add(createTicket(project, lbl1, "title2", "desc2", LocalDate.now().plusDays(3), user));
+
+        tickets.add(createTicket(project, lbl1, "title4", "desc", LocalDate.now().plusDays(1), user1));
+        tickets.add(createTicket(project, lbl1, "title5", "desc", LocalDate.now().plusDays(1), user2));
+
+        tickets.add(createTicket(project, lbl1, "title3", "desc", LocalDate.now().plusDays(4), user));
+
+    }
+
+
+
+    private User createUser(String login) {
+        User user = new User();
+        user.setLogin(login);
+        user.setPassword(RandomStringUtils.random(60));
+        user.setActivated(true);
+        user.setEmail(login+"@localhost");
+        user.setFirstName("john");
+        user.setLastName("doe");
+        user.setImageUrl("http://placehold.it/50x50");
+        user.setLangKey("en");
+        return userRepository.saveAndFlush(user);
+    }
+
+    private Ticket createTicket(Project project, Label label, String title, String desc, LocalDate dueDate, User assignedTo) {
+        Ticket ticket = new Ticket();
+        ticket.setTitle(title);
+        ticket.setAssignedTo(assignedTo);
+        ticket.setDescription(desc);
+        ticket.setDone(false);
+        ticket.setProject(project);
+        ticket.setLabels(Sets.newHashSet(label));
+        ticket.setDueDate(dueDate);
+        return ticketRepository.saveAndFlush(ticket);
+    }
+
+
 }
