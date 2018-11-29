@@ -17,6 +17,8 @@ import java.util.Optional;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
+    @Query("select ticket from Ticket ticket where ticket.assignedTo.login = ?#{principal.username}")
+    List<Ticket> findByAssignedToIsCurrentUser();
 
     @Query(value = "select distinct ticket from Ticket ticket left join fetch ticket.labels",
         countQuery = "select count(distinct ticket) from Ticket ticket")

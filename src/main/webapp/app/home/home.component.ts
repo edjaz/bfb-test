@@ -4,8 +4,9 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { Account, LoginModalService, Principal } from 'app/core';
 import { TicketService } from 'app/entities/ticket';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ITicket } from 'app/shared/model/ticket.model';
+import { SERVER_API_URL } from 'app/app.constants';
 
 @Component({
     selector: 'jhi-home',
@@ -17,12 +18,17 @@ export class HomeComponent implements OnInit {
     modalRef: NgbModalRef;
 
     myTickets: ITicket[];
+    original: number[];
+    max: number;
+    sum: number;
+    up6: number[];
 
     constructor(
         private principal: Principal,
         private ticketService: TicketService,
         private loginModalService: LoginModalService,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private httpClient: HttpClient
     ) {}
 
     ngOnInit() {
@@ -58,5 +64,16 @@ export class HomeComponent implements OnInit {
 
     login() {
         this.modalRef = this.loginModalService.open();
+    }
+
+    computeRandomServer() {
+        this.httpClient.get<number[]>(SERVER_API_URL + 'api/random').subscribe(arrays => this.computeValues(arrays));
+    }
+
+    private computeValues(arrays: number[]) {
+        this.original = arrays;
+        this.max = arrays.reduce((acc, val) => (acc < val ? val : acc));
+        this.sum = arrays.reduce((acc, val) => acc + val);
+        this.up6 = arrays.filter(v => v >= 6).sort((a, b) => a - b);
     }
 }

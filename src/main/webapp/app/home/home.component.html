@@ -12,6 +12,15 @@
                     translateValues="{username: '{{account.login}}'}"> You are logged in as user "{{account.login}}". </span>
             </div>
 
+            <button (click)="computeRandomServer()">Calcul</button>
+
+            <div *ngIf="original!=null">
+                <p>Original = <span *ngFor="let res of original;">{{res}},</span></p>
+                <p>Max = {{max}}</p>
+                <p>Sum = {{sum}}</p>
+                <p>Up to 6 = <span *ngFor="let res of up6;">{{res}},</span></p>
+            </div>
+
             <jhi-mine-ticket [myTickets]="myTickets" *ngSwitchCase="true"></jhi-mine-ticket>
 
             <div class="alert alert-warning" *ngSwitchCase="false">
