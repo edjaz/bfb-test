@@ -34,12 +34,27 @@ Et vous montrer comment :
  
  La route doit être /api/tickets/mine?last=x
  
- ## Step 4 : Coder le service angular de récupérations de données
+ ## step 4 : Calcul magique
  
- ## Step 5 : Coder le composant graphique angular
+ Mettre un boutton sur la home page qui appelle le service à l'adresse suivant:
+
+/api/random 
  
- ## Step 6 :  Le mettre sur la page Home de l'utilisateur
+ Ce service retour une liste entier (ex : [4,8,0,4,6,2]), vous devez afficher la valeur la plus grande,
+ le somme des 3 plus grand, et une liste d'entier supérieur ou égale à 6.
  
-  ## Step 7 : Faire la démo de votre travail 
+ Donc dans notre exemple : 
+ Max : 8
+ Sum: 16
+ Up to 6 : [6,8] 
+  
+ 
+ ## Step 5 : Coder le service angular de récupérations de données
+ 
+ ## Step 6 : Coder le composant graphique angular et le mettre sur la page Home de l'utilisateur
+ 
+  ## Step 7 : Faire la démo de votre travail
+  
+   
  
 
