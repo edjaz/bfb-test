@@ -1,0 +1,45 @@
+<div class="table-responsive">
+    <h2>Liste de vous taches</h2>
+
+    <table class="table table-striped" *ngIf="myTickets; else noTask" >
+        <thead>
+        <tr>
+            <th><span>Title</span></th>
+            <th><span>Description</span></th>
+            <th><span>Due Date</span></th>
+            <th><span>Done</span></th>
+            <th><span>Project</span></th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let ticket of myTickets;">
+            <td>{{ticket.title}}</td>
+            <td>{{ticket.description}}</td>
+            <td>{{ticket.dueDate | date:'mediumDate'}}</td>
+            <td>{{ticket.done}}</td>
+            <td>
+                <div *ngIf="ticket.projectId">
+                    <a [routerLink]="['../project', ticket.projectId , 'view' ]" >{{ticket.projectName}}</a>
+                </div>
+            </td>
+            <td>
+                {{ticket.assignedToLogin}}
+            </td>
+            <td class="text-right">
+                <div class="btn-group flex-btn-group-container">
+                    <button type="submit"
+                            [routerLink]="['/ticket', ticket.id, 'view' ]"
+                            class="btn btn-info btn-sm">
+                        <fa-icon [icon]="'eye'"></fa-icon>
+                        <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <ng-template #noTask>
+        Vous n'avez pas de tâche
+    </ng-template>
+</div>
