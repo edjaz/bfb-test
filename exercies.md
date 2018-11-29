@@ -41,12 +41,13 @@ Et vous montrer comment :
 /api/random 
  
  Ce service retour une liste entier (ex : [4,8,0,4,6,2]), vous devez afficher la valeur la plus grande,
- le somme des 3 plus grand, et une liste d'entier supérieur ou égale à 6.
+ le somme des 3 plus grand, et une liste d'entier supérieur ou égale à 6 et ordonné.
  
  Donc dans notre exemple : 
+ Original : 4,8,0,4,6,2
  Max : 8
  Sum: 16
- Up to 6 : [6,8] 
+ Up to 6 : 6,8 
   
  
  ## Step 5 : Coder le service angular de récupérations de données
