@@ -173,6 +173,17 @@ app.post('/api/authenticate', (req: Request, res: Response) => {
     });
 });
 
+app.get('/api/random', (req: Request, res: Response) => {
+    const shuffleArray = arr => arr.sort(() => Math.random() - 0.5);
+    const numbers = [];
+    for (let i = 0; i < 20; i++) {
+        numbers.push(Math.floor(Math.random() * 10));
+    }
+
+    //const numbers = Array.from(Array(10).keys());
+    res.json(shuffleArray(numbers));
+});
+
 app.listen(port, function() {
     console.log('Example app listening on port ' + port + '!');
 });
