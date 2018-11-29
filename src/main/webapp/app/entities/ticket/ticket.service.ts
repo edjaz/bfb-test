@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { DATE_FORMAT } from 'app/shared/constants/input.constants';
@@ -70,5 +70,14 @@ export class TicketService {
             });
         }
         return res;
+    }
+
+    findMine(last?: number): Observable<EntityArrayResponseType> {
+        last = last || 3;
+        let options: HttpParams = new HttpParams();
+        options = options.append('sort', last.toString());
+        return this.http
+            .get<ITicket[]>(this.resourceUrl + '/mine', { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 }

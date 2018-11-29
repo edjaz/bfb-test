@@ -126,6 +126,35 @@ describe('Service Tests', () => {
                 const req = httpMock.expectOne({ method: 'DELETE' });
                 req.flush({ status: 200 });
             });
+
+            it('should get my tickets', async () => {
+                const returnedFromService = Object.assign(
+                    {
+                        title: 'BBBBBB',
+                        description: 'BBBBBB',
+                        dueDate: currentDate.format(DATE_FORMAT),
+                        done: true
+                    },
+                    elemDefault
+                );
+                const expected = Object.assign(
+                    {
+                        dueDate: currentDate
+                    },
+                    returnedFromService
+                );
+
+                service
+                    .query(expected)
+                    .pipe(
+                        take(1),
+                        map(resp => resp.body)
+                    )
+                    .subscribe(body => expect(body).toContainEqual(expected));
+
+                const req = httpMock.expectOne({ method: 'GET' });
+                req.flush({ status: 200 });
+            });
         });
 
         afterEach(() => {
